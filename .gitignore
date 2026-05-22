@@ -1,0 +1,12 @@
+.env
+.env.local
+*.env
+
+# Go
+backend/tmp/
+backend/server
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
