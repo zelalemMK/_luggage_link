@@ -28,7 +28,7 @@ export const Route = createFileRoute('/dashboard/shipments/$id')({
 
 function ShipmentDetailPage() {
   const { id } = Route.useParams()
-  const { data: shipment, isLoading, isError } = useShipment(Number(id))
+  const { data: shipment, isLoading, isError } = useShipment(id)
 
   if (isLoading) {
     return (

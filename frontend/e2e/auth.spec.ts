@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test'
-import { MOCK_CUSTOMER, MOCK_ADMIN, clearAuthToken } from './helpers'
+import { MOCK_CUSTOMER, MOCK_ADMIN } from './helpers'
 
 test.describe('Login Page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login')
-    await clearAuthToken(page)
-    await page.reload()
   })
 
   test('renders login form', async ({ page }) => {
@@ -127,10 +125,7 @@ test.describe('Login Page', () => {
 
 test.describe('Register Page', () => {
   test.beforeEach(async ({ page }) => {
-    await clearAuthToken(page)
     await page.goto('/register')
-    await clearAuthToken(page)
-    await page.reload()
   })
 
   test('renders registration form with all fields', async ({ page }) => {

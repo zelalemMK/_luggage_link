@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test'
-import { MOCK_SHIPMENT, clearAuthToken } from './helpers'
+import { MOCK_SHIPMENT } from './helpers'
 
 test.describe('Public Tracking Page', () => {
   test.beforeEach(async ({ page }) => {
-    await clearAuthToken(page)
     await page.goto('/track')
   })
 
@@ -97,7 +96,7 @@ test.describe('Public Tracking Page', () => {
     await page.getByPlaceholder(/LL-2025/i).fill('LL-2025-AB3X9Z')
     await page.getByRole('button', { name: /track/i }).click()
 
-    await expect(page.getByText('2')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('2', { exact: true })).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('80 lbs')).toBeVisible()
   })
 })

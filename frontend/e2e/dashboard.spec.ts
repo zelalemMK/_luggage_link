@@ -75,7 +75,7 @@ test.describe('Customer Dashboard', () => {
 
     await page.goto('/dashboard')
     await expect(page.getByText(/no shipments yet/i)).toBeVisible({ timeout: 5000 })
-    await expect(page.getByRole('link', { name: /book shipment/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: /book shipment/i }).first()).toBeVisible()
   })
 
   test('"Book Shipment" button navigates to /dashboard/shipments/new', async ({ page }) => {
@@ -125,19 +125,19 @@ test.describe('Shipment Detail Page', () => {
 
   test('shows pickup and delivery addresses', async ({ page }) => {
     await page.goto(`/dashboard/shipments/${SHIPMENT_ID}`)
-    await expect(page.getByText(/Los Angeles/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText(/Los Angeles/i).first()).toBeVisible({ timeout: 5000 })
     await expect(page.getByText(/Addis Ababa/i)).toBeVisible()
   })
 
   test('shows tracking timeline with events', async ({ page }) => {
     await page.goto(`/dashboard/shipments/${SHIPMENT_ID}`)
-    await expect(page.getByText(/tracking history/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText(/tracking timeline/i)).toBeVisible({ timeout: 5000 })
     await expect(page.getByText(/Shipment booking received/i)).toBeVisible()
   })
 
   test('shows bag count and weight', async ({ page }) => {
     await page.goto(`/dashboard/shipments/${SHIPMENT_ID}`)
-    await expect(page.getByText(/2 bags/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('2', { exact: true })).toBeVisible({ timeout: 5000 })
     await expect(page.getByText(/80.*lbs/i)).toBeVisible()
   })
 

@@ -178,7 +178,7 @@ function LandingPage() {
         </div>
 
         {/* Ethiopian flag accent bar */}
-        <div className="absolute bottom-0 left-0 right-0 flex h-2">
+        <div className="absolute bottom-0 left-0 right-0 flex h-2" data-testid="eth-flag-stripe">
           <div className="flex-1" style={{ backgroundColor: '#078930' }} />
           <div className="flex-1" style={{ backgroundColor: '#FCDD09' }} />
           <div className="flex-1" style={{ backgroundColor: '#DA121A' }} />

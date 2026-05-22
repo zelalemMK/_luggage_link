@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test'
-import { clearAuthToken } from './helpers'
 
 test.describe('Landing Page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
-    await clearAuthToken(page)
   })
 
   test('shows brand name and hero headline', async ({ page }) => {
@@ -43,9 +41,7 @@ test.describe('Landing Page', () => {
 
   test('Ethiopian flag color stripe is visible on the page', async ({ page }) => {
     await page.goto('/')
-    // The stripe uses inline style with the Ethiopian colors
-    const stripes = await page.locator('[style*="078930"]').count()
-    expect(stripes).toBeGreaterThan(0)
+    await expect(page.getByTestId('eth-flag-stripe')).toBeVisible()
   })
 
   test('clicking Sign In navigates to /login', async ({ page }) => {

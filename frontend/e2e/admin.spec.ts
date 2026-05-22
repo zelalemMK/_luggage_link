@@ -60,9 +60,9 @@ test.describe('Admin Dashboard', () => {
   test('shows stats cards with correct values', async ({ page }) => {
     await page.goto('/admin')
     // total shipments = 42
-    await expect(page.getByText('42')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('42', { exact: true })).toBeVisible({ timeout: 5000 })
     // pending = 5
-    await expect(page.getByText('5')).toBeVisible()
+    await expect(page.getByText('5', { exact: true })).toBeVisible()
     // revenue from actual_usd = $3,200
     await expect(page.getByText(/\$3,200/)).toBeVisible()
   })
@@ -220,8 +220,8 @@ test.describe('Admin Shipment Detail', () => {
   })
 
   test('add event submit is disabled when location or description is empty', async ({ page }) => {
-    await page.getByRole('button', { name: /add event/i }).click()
-    const submitBtn = page.getByRole('button', { name: /^add event$/i })
+    await page.getByRole('button', { name: /add event/i }).first().click()
+    const submitBtn = page.getByRole('dialog').getByRole('button', { name: /^add event$/i })
     await expect(submitBtn).toBeDisabled()
   })
 
@@ -241,10 +241,10 @@ test.describe('Admin Shipment Detail', () => {
       })
     })
 
-    await page.getByRole('button', { name: /add event/i }).click()
+    await page.getByRole('button', { name: /add event/i }).first().click()
     await page.getByLabel(/location/i).fill('JFK Airport, New York')
     await page.getByLabel(/description/i).fill('Package has departed')
-    const submitBtn = page.getByRole('button', { name: /^add event$/i })
+    const submitBtn = page.getByRole('dialog').getByRole('button', { name: /^add event$/i })
     await expect(submitBtn).not.toBeDisabled()
   })
 

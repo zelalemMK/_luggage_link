@@ -211,6 +211,4 @@ const rootRouteChildren: RootRouteChildren = {
   AdminUsersIndexRoute,
 }
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addRouteTypes<{
-  fileRoutesByPath: FileRoutesByPath
-}>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)
