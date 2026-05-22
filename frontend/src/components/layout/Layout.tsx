@@ -1,15 +1,17 @@
-import { Outlet } from '@tanstack/react-router'
+import React from 'react'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
 
+interface LayoutProps {
+  children: React.ReactNode
+}
+
 /** Public layout — just navbar + main content */
-export function PublicLayout() {
+export function PublicLayout({ children }: LayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Navbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <main className="flex-1">{children}</main>
       <footer className="border-t border-gray-100 bg-white py-6 text-center text-xs text-gray-400">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-2 flex justify-center">
@@ -24,14 +26,14 @@ export function PublicLayout() {
 }
 
 /** App shell layout — sidebar + content area (dashboard / admin) */
-export function AppLayout() {
+export function AppLayout({ children }: LayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar className="hidden md:flex" />
         <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>
