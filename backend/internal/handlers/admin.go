@@ -87,13 +87,10 @@ func (h *AdminHandler) ListShipments(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"shipments": shipments,
-		"pagination": gin.H{
-			"page":        page,
-			"limit":       limit,
-			"total":       total,
-			"total_pages": totalPages(total, limit),
-		},
+		"data":     shipments,
+		"total":    total,
+		"page":     page,
+		"per_page": limit,
 	})
 }
 
@@ -276,13 +273,10 @@ func (h *AdminHandler) ListUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"users": safeUsers,
-		"pagination": gin.H{
-			"page":        page,
-			"limit":       limit,
-			"total":       total,
-			"total_pages": totalPages(total, limit),
-		},
+		"data":     safeUsers,
+		"total":    total,
+		"page":     page,
+		"per_page": limit,
 	})
 }
 

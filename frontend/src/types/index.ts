@@ -17,7 +17,7 @@ export type UserRole = 'customer' | 'admin'
 // ─── Core Models ────────────────────────────────────────────────────────────
 
 export interface User {
-  id: number
+  id: string
   email: string
   first_name: string
   last_name: string
@@ -28,8 +28,8 @@ export interface User {
 }
 
 export interface TrackingEvent {
-  id: number
-  shipment_id: number
+  id: string
+  shipment_id: string
   status: ShipmentStatus
   location: string
   description: string
@@ -45,9 +45,9 @@ export interface Address {
 }
 
 export interface Shipment {
-  id: number
+  id: string
   tracking_number: string
-  user_id: number
+  user_id: string
   user?: User
   status: ShipmentStatus
   pickup_address: Address
@@ -114,8 +114,9 @@ export interface PricingEstimateResponse {
   estimated_price_usd: number
   breakdown: {
     base_rate: number
-    weight_charge: number
     bag_charge: number
+    weight_charge: number
+    express_fee: number
   }
 }
 
@@ -132,11 +133,14 @@ export interface PaginatedResponse<T> {
 
 export interface AdminStats {
   total_shipments: number
-  pending: number
-  in_transit: number
-  delivered: number
-  cancelled: number
-  total_revenue_usd: number
+  active_shipments: number
+  total_customers: number
+  shipments_by_status: Partial<Record<ShipmentStatus, number>>
+  revenue: {
+    actual_usd: number
+    estimated_usd: number
+  }
+  recent_activity: Shipment[]
 }
 
 export interface UserWithShipmentCount extends User {

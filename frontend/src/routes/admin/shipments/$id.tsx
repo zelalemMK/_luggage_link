@@ -41,11 +41,10 @@ const ALL_STATUSES: ShipmentStatus[] = [
 
 function AdminShipmentDetailPage() {
   const { id } = Route.useParams()
-  const numId = Number(id)
 
-  const { data: shipment, isLoading, isError } = useAdminShipment(numId)
-  const updateMutation = useUpdateShipment(numId)
-  const addEventMutation = useAddTrackingEvent(numId)
+  const { data: shipment, isLoading, isError } = useAdminShipment(id)
+  const updateMutation = useUpdateShipment(id)
+  const addEventMutation = useAddTrackingEvent(id)
 
   // Status update state
   const [selectedStatus, setSelectedStatus] = useState<ShipmentStatus | ''>('')

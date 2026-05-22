@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"math"
 	"net/http"
 
@@ -33,15 +32,17 @@ type estimateRequest struct {
 	Express        bool    `json:"express"`
 }
 
+type breakdownDetail struct {
+	BaseRate    float64 `json:"base_rate"`
+	BagCharge   float64 `json:"bag_charge"`
+	WeightCharge float64 `json:"weight_charge"`
+	ExpressFee  float64 `json:"express_fee"`
+}
+
 type estimateResponse struct {
-	NumBags         int     `json:"num_bags"`
-	TotalWeightLbs  float64 `json:"total_weight_lbs"`
-	BasePrice       float64 `json:"base_price_usd"`
-	WeightSurcharge float64 `json:"weight_surcharge_usd"`
-	ExpressFee      float64 `json:"express_fee_usd"`
-	TotalPrice      float64 `json:"total_price_usd"`
-	Express         bool    `json:"express"`
-	Breakdown       string  `json:"breakdown"`
+	EstimatedPriceUSD float64        `json:"estimated_price_usd"`
+	Express           bool           `json:"express"`
+	Breakdown         breakdownDetail `json:"breakdown"`
 }
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
@@ -58,14 +59,14 @@ func (h *PricingHandler) Estimate(c *gin.Context) {
 	base, surcharge, expressFee, total := calculatePrice(req.NumBags, req.TotalWeightLbs, req.Express)
 
 	c.JSON(http.StatusOK, estimateResponse{
-		NumBags:         req.NumBags,
-		TotalWeightLbs:  req.TotalWeightLbs,
-		BasePrice:       base,
-		WeightSurcharge: surcharge,
-		ExpressFee:      expressFee,
-		TotalPrice:      total,
-		Express:         req.Express,
-		Breakdown:       buildBreakdown(req.NumBags, req.TotalWeightLbs, base, surcharge, expressFee, total),
+		EstimatedPriceUSD: total,
+		Express:           req.Express,
+		Breakdown: breakdownDetail{
+			BaseRate:    basePricePerBag,
+			BagCharge:   base,
+			WeightCharge: surcharge,
+			ExpressFee:  expressFee,
+		},
 	})
 }
 
@@ -93,18 +94,3 @@ func calculatePrice(numBags int, totalWeightLbs float64, express bool) (base, su
 	return base, surcharge, expressFee, total
 }
 
-// buildBreakdown returns a human-readable explanation of the pricing.
-func buildBreakdown(numBags int, totalWeightLbs, base, surcharge, expressFee, total float64) string {
-	avgWeight := totalWeightLbs / float64(numBags)
-	s := fmt.Sprintf("Base price: $%.2f (%d bag(s) × $%.2f)", base, numBags, basePricePerBag)
-	if surcharge > 0 {
-		overage := math.Max(0, avgWeight-weightThresholdLb)
-		s += fmt.Sprintf("; Weight surcharge: $%.2f (avg %.2f lbs/bag, %.2f lbs over threshold × $%.2f × %d bag(s))",
-			surcharge, avgWeight, overage, surchargePerLb, numBags)
-	}
-	if expressFee > 0 {
-		s += fmt.Sprintf("; Express fee: $%.2f", expressFee)
-	}
-	s += fmt.Sprintf("; Total: $%.2f", total)
-	return s
-}

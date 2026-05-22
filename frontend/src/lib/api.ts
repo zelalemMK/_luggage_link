@@ -85,7 +85,7 @@ export const shipmentsApi = {
   },
 
   // Customer: get single shipment
-  get: async (id: number): Promise<Shipment> => {
+  get: async (id: string): Promise<Shipment> => {
     const res = await apiClient.get<Shipment>(`/api/shipments/${id}`)
     return res.data
   },
@@ -98,7 +98,7 @@ export const shipmentsApi = {
 
   // Public: track by tracking number
   track: async (trackingNumber: string): Promise<Shipment> => {
-    const res = await apiClient.get<Shipment>(`/api/track/${trackingNumber}`)
+    const res = await apiClient.get<Shipment>(`/api/shipments/track/${trackingNumber}`)
     return res.data
   },
 }
@@ -116,18 +116,18 @@ export const adminShipmentsApi = {
     return res.data
   },
 
-  get: async (id: number): Promise<Shipment> => {
+  get: async (id: string): Promise<Shipment> => {
     const res = await apiClient.get<Shipment>(`/api/admin/shipments/${id}`)
     return res.data
   },
 
-  update: async (id: number, data: UpdateShipmentRequest): Promise<Shipment> => {
+  update: async (id: string, data: UpdateShipmentRequest): Promise<Shipment> => {
     const res = await apiClient.put<Shipment>(`/api/admin/shipments/${id}`, data)
     return res.data
   },
 
-  addTrackingEvent: async (id: number, data: AddTrackingEventRequest): Promise<Shipment> => {
-    const res = await apiClient.post<Shipment>(`/api/admin/shipments/${id}/tracking`, data)
+  addTrackingEvent: async (id: string, data: AddTrackingEventRequest): Promise<Shipment> => {
+    const res = await apiClient.post<Shipment>(`/api/admin/shipments/${id}/tracking-event`, data)
     return res.data
   },
 
@@ -145,7 +145,7 @@ export const adminUsersApi = {
     return res.data
   },
 
-  get: async (id: number): Promise<UserWithShipmentCount> => {
+  get: async (id: string): Promise<UserWithShipmentCount> => {
     const res = await apiClient.get<UserWithShipmentCount>(`/api/admin/users/${id}`)
     return res.data
   },

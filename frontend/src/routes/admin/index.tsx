@@ -65,33 +65,33 @@ function AdminDashboard() {
           />
           <StatsCard
             title="Pending"
-            value={stats?.pending ?? 0}
+            value={stats?.shipments_by_status?.['PENDING'] ?? 0}
             icon={Clock}
             color="yellow"
             subtitle="Awaiting confirmation"
           />
           <StatsCard
             title="In Transit"
-            value={stats?.in_transit ?? 0}
+            value={stats?.active_shipments ?? 0}
             icon={Truck}
             color="orange"
-            subtitle="Currently shipping"
+            subtitle="Currently active"
           />
           <StatsCard
             title="Delivered"
-            value={stats?.delivered ?? 0}
+            value={stats?.shipments_by_status?.['DELIVERED'] ?? 0}
             icon={CheckCircle2}
             color="green"
           />
           <StatsCard
             title="Cancelled"
-            value={stats?.cancelled ?? 0}
+            value={stats?.shipments_by_status?.['CANCELLED'] ?? 0}
             icon={XCircle}
             color="red"
           />
           <StatsCard
             title="Total Revenue"
-            value={formatCurrency(stats?.total_revenue_usd ?? 0)}
+            value={formatCurrency(stats?.revenue?.actual_usd ?? 0)}
             icon={DollarSign}
             color="teal"
             subtitle="Actual confirmed revenue"

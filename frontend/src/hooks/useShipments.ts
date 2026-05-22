@@ -15,12 +15,12 @@ export const shipmentKeys = {
   lists: () => [...shipmentKeys.all, 'list'] as const,
   list: (params: object) => [...shipmentKeys.lists(), params] as const,
   details: () => [...shipmentKeys.all, 'detail'] as const,
-  detail: (id: number) => [...shipmentKeys.details(), id] as const,
+  detail: (id: string) => [...shipmentKeys.details(), id] as const,
   track: (trackingNumber: string) => ['track', trackingNumber] as const,
   adminAll: ['admin', 'shipments'] as const,
   adminLists: () => [...shipmentKeys.adminAll, 'list'] as const,
   adminList: (params: object) => [...shipmentKeys.adminLists(), params] as const,
-  adminDetail: (id: number) => [...shipmentKeys.adminAll, 'detail', id] as const,
+  adminDetail: (id: string) => [...shipmentKeys.adminAll, 'detail', id] as const,
   adminStats: ['admin', 'stats'] as const,
 }
 
@@ -33,7 +33,7 @@ export function useMyShipments(params?: { page?: number; per_page?: number }) {
   })
 }
 
-export function useShipment(id: number) {
+export function useShipment(id: string) {
   return useQuery({
     queryKey: shipmentKeys.detail(id),
     queryFn: () => shipmentsApi.get(id),
@@ -78,7 +78,7 @@ export function useAdminShipments(params?: {
   })
 }
 
-export function useAdminShipment(id: number) {
+export function useAdminShipment(id: string) {
   return useQuery({
     queryKey: shipmentKeys.adminDetail(id),
     queryFn: () => adminShipmentsApi.get(id),
@@ -93,7 +93,7 @@ export function useAdminStats() {
   })
 }
 
-export function useUpdateShipment(id: number) {
+export function useUpdateShipment(id: string) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: UpdateShipmentRequest) => adminShipmentsApi.update(id, data),
@@ -109,7 +109,7 @@ export function useUpdateShipment(id: number) {
   })
 }
 
-export function useAddTrackingEvent(shipmentId: number) {
+export function useAddTrackingEvent(shipmentId: string) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: AddTrackingEventRequest) =>

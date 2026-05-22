@@ -27,14 +27,36 @@ func NewShipmentHandler(notifier *services.NotificationService) *ShipmentHandler
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
+type addressInput struct {
+	Street string `json:"street"`
+	City   string `json:"city"`
+	State  string `json:"state"`
+	Zip    string `json:"zip"`
+}
+
+// formatAddressInput converts an address object to a single-line string for storage.
+func formatAddressInput(a addressInput) string {
+	s := a.Street
+	if a.City != "" {
+		s += ", " + a.City
+	}
+	if a.State != "" {
+		s += ", " + a.State
+	}
+	if a.Zip != "" {
+		s += " " + a.Zip
+	}
+	return s
+}
+
 type createShipmentRequest struct {
-	PickupAddress   string     `json:"pickup_address"    binding:"required"`
-	DeliveryAddress string     `json:"delivery_address"`
-	NumBags         int        `json:"num_bags"          binding:"required,min=1"`
-	TotalWeightLbs  float64    `json:"total_weight_lbs"  binding:"required,min=0"`
-	Notes           string     `json:"notes"`
-	Express         bool       `json:"express"`
-	PickupScheduled *time.Time `json:"pickup_scheduled_at"`
+	PickupAddress   addressInput `json:"pickup_address"    binding:"required"`
+	DeliveryAddress addressInput `json:"delivery_address"`
+	NumBags         int          `json:"num_bags"          binding:"required,min=1"`
+	TotalWeightLbs  float64      `json:"total_weight_lbs"  binding:"required,min=0"`
+	Notes           string       `json:"notes"`
+	Express         bool         `json:"express"`
+	PickupScheduled *time.Time   `json:"pickup_scheduled_at"`
 }
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
@@ -65,13 +87,10 @@ func (h *ShipmentHandler) List(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"shipments": shipments,
-		"pagination": gin.H{
-			"page":        page,
-			"limit":       limit,
-			"total":       total,
-			"total_pages": totalPages(total, limit),
-		},
+		"data":     shipments,
+		"total":    total,
+		"page":     page,
+		"per_page": limit,
 	})
 }
 
@@ -90,7 +109,8 @@ func (h *ShipmentHandler) Create(c *gin.Context) {
 		return
 	}
 
-	deliveryAddress := req.DeliveryAddress
+	pickupAddress := formatAddressInput(req.PickupAddress)
+	deliveryAddress := formatAddressInput(req.DeliveryAddress)
 	if deliveryAddress == "" {
 		deliveryAddress = "Addis Ababa, Ethiopia"
 	}
@@ -103,7 +123,7 @@ func (h *ShipmentHandler) Create(c *gin.Context) {
 		TrackingNumber:  trackingNumber,
 		UserID:          userID,
 		Status:          models.StatusPending,
-		PickupAddress:   req.PickupAddress,
+		PickupAddress:   pickupAddress,
 		DeliveryAddress: deliveryAddress,
 		NumBags:         req.NumBags,
 		TotalWeightLbs:  req.TotalWeightLbs,
