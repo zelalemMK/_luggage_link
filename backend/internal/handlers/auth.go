@@ -53,6 +53,10 @@ type changePasswordRequest struct {
 	NewPassword     string `json:"new_password"     binding:"required,min=8"`
 }
 
+type forgotPasswordRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 
 // Register creates a new customer account.
@@ -242,6 +246,20 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "password updated successfully"})
+}
+
+// ForgotPassword accepts an email and responds the same way whether or not the
+// account exists (prevents email enumeration). Real reset emails would be sent
+// here via an email service.
+// POST /api/auth/forgot-password
+func (h *AuthHandler) ForgotPassword(c *gin.Context) {
+	var req forgotPasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// Always return the same response to prevent email enumeration.
+	c.JSON(http.StatusOK, gin.H{"message": "If an account with that email exists, you'll receive reset instructions shortly."})
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

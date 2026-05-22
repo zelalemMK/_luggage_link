@@ -73,6 +73,11 @@ export const authApi = {
     const res = await apiClient.get<User>('/api/auth/me')
     return res.data
   },
+
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ message: string }>('/api/auth/forgot-password', { email })
+    return res.data
+  },
 }
 
 // ─── Shipments API ────────────────────────────────────────────────────────────

@@ -133,7 +133,6 @@ test.describe('Register Page', () => {
     await expect(page.getByLabel(/first name/i)).toBeVisible()
     await expect(page.getByLabel(/last name/i)).toBeVisible()
     await expect(page.getByLabel(/email address/i)).toBeVisible()
-    await expect(page.getByLabel(/phone number/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /create account/i })).toBeVisible()
   })
 
@@ -142,7 +141,6 @@ test.describe('Register Page', () => {
     await expect(page.getByText(/first name is required/i)).toBeVisible()
     await expect(page.getByText(/last name is required/i)).toBeVisible()
     await expect(page.getByText(/email is required/i)).toBeVisible()
-    await expect(page.getByText(/phone number is required/i)).toBeVisible()
     await expect(page.getByText(/password is required/i)).toBeVisible()
   })
 
@@ -150,8 +148,6 @@ test.describe('Register Page', () => {
     await page.getByLabel(/first name/i).fill('Abebe')
     await page.getByLabel(/last name/i).fill('Girma')
     await page.getByLabel(/email address/i).fill('abebe@example.com')
-    await page.getByLabel(/phone number/i).fill('+1-555-123-4567')
-    // Fill password directly in the raw inputs
     await page.locator('input[placeholder="Min. 8 characters"]').fill('password123')
     await page.getByLabel(/confirm password/i).fill('different_password')
     await page.getByRole('button', { name: /create account/i }).click()
@@ -162,7 +158,6 @@ test.describe('Register Page', () => {
     await page.getByLabel(/first name/i).fill('Abebe')
     await page.getByLabel(/last name/i).fill('Girma')
     await page.getByLabel(/email address/i).fill('abebe@example.com')
-    await page.getByLabel(/phone number/i).fill('+1-555-123-4567')
     await page.locator('input[placeholder="Min. 8 characters"]').fill('short')
     await page.getByLabel(/confirm password/i).fill('short')
     await page.getByRole('button', { name: /create account/i }).click()
@@ -195,7 +190,6 @@ test.describe('Register Page', () => {
     await page.getByLabel(/first name/i).fill('Abebe')
     await page.getByLabel(/last name/i).fill('Girma')
     await page.getByLabel(/email address/i).fill('abebe@example.com')
-    await page.getByLabel(/phone number/i).fill('+1-555-123-4567')
     await page.locator('input[placeholder="Min. 8 characters"]').fill('securepassword')
     await page.getByLabel(/confirm password/i).fill('securepassword')
     await page.getByRole('button', { name: /create account/i }).click()

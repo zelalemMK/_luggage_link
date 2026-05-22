@@ -24,6 +24,9 @@ func main() {
 	if err := database.Migrate(); err != nil {
 		log.Fatalf("database migration failed: %v", err)
 	}
+	if err := database.ClearCustomerUsers(); err != nil {
+		log.Fatalf("database clear failed: %v", err)
+	}
 	if err := database.SeedAdmin(cfg.AdminEmail, cfg.AdminPassword); err != nil {
 		log.Fatalf("admin seed failed: %v", err)
 	}
@@ -65,6 +68,7 @@ func main() {
 	{
 		apiAuth.POST("/register", authHandler.Register)
 		apiAuth.POST("/login", authHandler.Login)
+		apiAuth.POST("/forgot-password", authHandler.ForgotPassword)
 
 		// Protected auth routes
 		authRequired := apiAuth.Group("", auth.RequireAuth(cfg.JWTSecret))

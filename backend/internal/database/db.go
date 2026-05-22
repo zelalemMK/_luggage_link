@@ -42,7 +42,21 @@ func Migrate() error {
 	return nil
 }
 
-// SeedAdmin creates the initial admin user if no admin exists in the database.
+// ClearCustomerUsers deletes all customer (non-admin) users and their data.
+// Called on startup to give a clean slate.
+func ClearCustomerUsers() error {
+	if err := DB.Exec("DELETE FROM tracking_events WHERE shipment_id IN (SELECT id FROM shipments WHERE user_id IN (SELECT id FROM users WHERE role = 'customer'))").Error; err != nil {
+		return fmt.Errorf("failed to clear tracking events: %w", err)
+	}
+	if err := DB.Exec("DELETE FROM shipments WHERE user_id IN (SELECT id FROM users WHERE role = 'customer')").Error; err != nil {
+		return fmt.Errorf("failed to clear shipments: %w", err)
+	}
+	if err := DB.Exec("DELETE FROM users WHERE role = 'customer'").Error; err != nil {
+		return fmt.Errorf("failed to clear customer users: %w", err)
+	}
+	log.Println("Cleared all customer users and their data")
+	return nil
+}
 // adminEmail and adminPassword are sourced from application config.
 func SeedAdmin(adminEmail, adminPassword string) error {
 	var count int64

@@ -21,7 +21,7 @@ export interface User {
   email: string
   first_name: string
   last_name: string
-  phone: string
+  phone?: string
   role: UserRole
   created_at: string
   updated_at: string
@@ -75,7 +75,7 @@ export interface RegisterRequest {
   password: string
   first_name: string
   last_name: string
-  phone: string
+  phone?: string
 }
 
 export interface AuthResponse {

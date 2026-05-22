@@ -15,6 +15,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as LoginImport } from './routes/login'
 import { Route as RegisterImport } from './routes/register'
+import { Route as ForgotPasswordImport } from './routes/forgot-password'
 import { Route as TrackImport } from './routes/track'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardShipmentsNewImport } from './routes/dashboard/shipments/new'
@@ -43,6 +44,12 @@ const LoginRoute = LoginImport.update({
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ForgotPasswordRoute = ForgotPasswordImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -120,6 +127,13 @@ export interface FileRoutesByPath {
     preLoaderRoute: typeof RegisterImport
     parentRoute: typeof rootRoute
   }
+  '/forgot-password': {
+    id: '/forgot-password'
+    path: '/forgot-password'
+    fullPath: '/forgot-password'
+    preLoaderRoute: typeof ForgotPasswordImport
+    parentRoute: typeof rootRoute
+  }
   '/track': {
     id: '/track'
     path: '/track'
@@ -187,6 +201,7 @@ export type RootRouteChildren = {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   TrackRoute: typeof TrackRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardShipmentsNewRoute: typeof DashboardShipmentsNewRoute
@@ -201,6 +216,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute,
   LoginRoute,
   RegisterRoute,
+  ForgotPasswordRoute,
   TrackRoute,
   DashboardIndexRoute,
   DashboardShipmentsNewRoute,

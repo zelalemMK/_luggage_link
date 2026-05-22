@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Package2, Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react'
+import { Package2, Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuth } from '@/hooks/useAuth'
@@ -19,7 +19,6 @@ interface FormData {
   first_name: string
   last_name: string
   email: string
-  phone: string
   password: string
   confirm_password: string
 }
@@ -31,7 +30,6 @@ function RegisterPage() {
     first_name: '',
     last_name: '',
     email: '',
-    phone: '',
     password: '',
     confirm_password: '',
   })
@@ -46,7 +44,6 @@ function RegisterPage() {
     if (!form.last_name.trim()) e.last_name = 'Last name is required'
     if (!form.email.trim()) e.email = 'Email is required'
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email'
-    if (!form.phone.trim()) e.phone = 'Phone number is required'
     if (!form.password) e.password = 'Password is required'
     else if (form.password.length < 8) e.password = 'Password must be at least 8 characters'
     if (form.password !== form.confirm_password) e.confirm_password = 'Passwords do not match'
@@ -61,7 +58,6 @@ function RegisterPage() {
       first_name: form.first_name,
       last_name: form.last_name,
       email: form.email,
-      phone: form.phone,
       password: form.password,
     })
   }
@@ -83,7 +79,6 @@ function RegisterPage() {
 
         {/* Card */}
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
-          {/* Ethiopian stripe */}
           <div className="mb-6 h-1 rounded-full" style={{ background: 'linear-gradient(to right, #078930 33%, #FCDD09 33%, #FCDD09 66%, #DA121A 66%)' }} />
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
@@ -116,17 +111,6 @@ function RegisterPage() {
               error={errors.email}
               leftAddon={<Mail className="h-4 w-4" />}
               autoComplete="email"
-            />
-
-            <Input
-              label="Phone Number"
-              type="tel"
-              placeholder="+1 (555) 000-0000"
-              value={form.phone}
-              onChange={set('phone')}
-              error={errors.phone}
-              leftAddon={<Phone className="h-4 w-4" />}
-              autoComplete="tel"
             />
 
             {/* Password */}
