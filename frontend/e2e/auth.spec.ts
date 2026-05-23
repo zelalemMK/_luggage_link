@@ -117,9 +117,23 @@ test.describe('Login Page', () => {
   })
 
   test('already logged-in user is redirected away from /login', async ({ page }) => {
+    await page.route('**/api/auth/me', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(MOCK_CUSTOMER),
+      })
+    })
+    await page.route('**/api/shipments*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ data: [], total: 0, page: 1, per_page: 20 }),
+      })
+    })
     await page.evaluate(() => localStorage.setItem('luggage_link_token', 'existing-token'))
     await page.goto('/login')
-    await expect(page).toHaveURL('/dashboard')
+    await expect(page).toHaveURL('/dashboard', { timeout: 5000 })
   })
 })
 
