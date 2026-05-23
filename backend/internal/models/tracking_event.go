@@ -32,16 +32,16 @@ func (t *TrackingEvent) BeforeCreate(tx *gorm.DB) error {
 // DefaultDescriptionForStatus returns a human-readable description for a given status.
 func DefaultDescriptionForStatus(status ShipmentStatus) string {
 	descriptions := map[ShipmentStatus]string{
-		StatusPending:          "Shipment request received and awaiting confirmation.",
-		StatusConfirmed:        "Shipment confirmed. Pickup will be scheduled shortly.",
-		StatusPickedUp:         "Luggage has been picked up from the sender.",
-		StatusInTransitUS:      "Shipment is in transit within the United States.",
+		StatusPending:          "Booking received and awaiting confirmation.",
+		StatusConfirmed:        "Booking confirmed. Please drop off your bags at the departure airport.",
+		StatusPickedUp:         "Bags checked in at the departure airport.",
+		StatusInTransitUS:      "Bags are at the departure airport, awaiting the flight.",
 		StatusCustomsClearance: "Shipment is undergoing customs clearance.",
-		StatusInTransitET:      "Shipment is in transit within Ethiopia.",
-		StatusArrivedEthiopia:  "Shipment has arrived in Ethiopia.",
-		StatusOutForDelivery:   "Shipment is out for final delivery.",
-		StatusDelivered:        "Shipment has been delivered successfully.",
-		StatusCancelled:        "Shipment has been cancelled.",
+		StatusInTransitET:      "Bags are in transit within Ethiopia.",
+		StatusArrivedEthiopia:  "Bags have arrived at the destination airport in Ethiopia.",
+		StatusOutForDelivery:   "Bags are ready for collection at the airport.",
+		StatusDelivered:        "Bags have been collected.",
+		StatusCancelled:        "Booking has been cancelled.",
 	}
 	if desc, ok := descriptions[status]; ok {
 		return desc

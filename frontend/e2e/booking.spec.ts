@@ -25,53 +25,26 @@ test.describe('Booking Form', () => {
     await page.goto('/dashboard/shipments/new')
   })
 
-  test('renders step 1 with address fields', async ({ page }) => {
+  test('renders step 1 with airport selection', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /book a shipment/i })).toBeVisible({ timeout: 5000 })
-    await expect(page.getByText(/pickup address/i).first()).toBeVisible()
-    await expect(page.getByPlaceholder(/123 Main St/i)).toBeVisible()
+    await expect(page.getByText(/select route/i)).toBeVisible()
+    await expect(page.getByText(/departure airport/i)).toBeVisible()
+    await expect(page.getByText(/arrival airport/i)).toBeVisible()
   })
 
-  test('step 1 shows validation errors for empty addresses', async ({ page }) => {
+  test('step 1 shows validation error when no departure airport selected', async ({ page }) => {
     await page.getByRole('button', { name: /next: luggage details/i }).click()
-    await expect(page.getByText(/street is required/i).first()).toBeVisible()
-    await expect(page.getByText(/city is required/i).first()).toBeVisible()
-  })
-
-  test('step 1 — delivery address street is required', async ({ page }) => {
-    // Fill pickup address completely
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-
-    await page.getByRole('button', { name: /next: luggage details/i }).click()
-    // Delivery street is empty → should show validation error
-    await expect(page.getByText(/street is required/i)).toBeVisible()
+    await expect(page.getByText(/select a departure airport/i)).toBeVisible()
   })
 
   test('completes step 1 and advances to step 2', async ({ page }) => {
-    // Fill pickup
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-
-    // Fill delivery
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
-
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
     await expect(page.getByText(/luggage details/i).first()).toBeVisible({ timeout: 3000 })
   })
 
   test('step 2 shows luggage fields', async ({ page }) => {
-    // Skip to step 2
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
 
     await expect(page.getByText(/number of bags/i)).toBeVisible({ timeout: 3000 })
@@ -80,49 +53,30 @@ test.describe('Booking Form', () => {
   })
 
   test('step 2 back button returns to step 1', async ({ page }) => {
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
 
     await page.getByRole('button', { name: /back/i }).click()
-    await expect(page.getByText(/pickup address/i).first()).toBeVisible()
+    await expect(page.getByText(/select route/i)).toBeVisible()
   })
 
   test('step 3 shows pricing estimate', async ({ page }) => {
-    // Step 1
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
-
-    // Step 2
     await page.getByRole('button', { name: /next: review/i }).click()
 
-    // Step 3 — pricing estimate
     await expect(page.getByText(/pricing estimate/i)).toBeVisible({ timeout: 5000 })
     await expect(page.getByText(/\$160/)).toBeVisible()
   })
 
-  test('step 3 shows shipment summary', async ({ page }) => {
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
+  test('step 3 shows booking summary', async ({ page }) => {
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
     await page.getByRole('button', { name: /next: review/i }).click()
 
-    await expect(page.getByText(/shipment summary/i)).toBeVisible({ timeout: 3000 })
-    await expect(page.getByText('456 Oak Ave')).toBeVisible()
-    await expect(page.getByText('Bole Road, Kebele 03')).toBeVisible()
+    await expect(page.getByText(/booking summary/i)).toBeVisible({ timeout: 3000 })
+    await expect(page.getByText(/john f\. kennedy international/i)).toBeVisible()
+    await expect(page.getByText(/addis ababa bole international/i)).toBeVisible()
   })
 
   test('successful booking navigates to shipment detail', async ({ page }) => {
@@ -143,13 +97,7 @@ test.describe('Booking Form', () => {
       })
     })
 
-    // Navigate through all steps
-    await page.getByPlaceholder(/123 Main St/i).fill('456 Oak Ave')
-    await page.getByPlaceholder(/Los Angeles/i).first().fill('Seattle')
-    await page.locator('select').first().selectOption('WA')
-    await page.getByPlaceholder(/90001/i).fill('98101')
-    await page.getByPlaceholder(/Bole Road/i).fill('Bole Road, Kebele 03')
-    await page.getByPlaceholder(/Addis Ababa/i).fill('Addis Ababa')
+    await page.locator('select').first().selectOption('JFK')
     await page.getByRole('button', { name: /next: luggage details/i }).click()
     await page.getByRole('button', { name: /next: review/i }).click()
     await page.getByRole('button', { name: /book shipment/i }).click()

@@ -58,12 +58,12 @@ function LoginPage() {
             US → Ethiopia shipping
           </p>
           <h2 className="text-4xl font-extrabold text-white leading-tight mb-6">
-            Your luggage,<br />
-            delivered with<br />
-            <span className="text-yellow-300">care.</span>
+            Airport to airport,<br />
+            US to<br />
+            <span className="text-yellow-300">Ethiopia.</span>
           </h2>
           <p className="text-brand-300 text-sm leading-relaxed max-w-xs">
-            Book a shipment online, we pick up your bags in the US and deliver them to Ethiopia.
+            Book online, drop your bags at the departure airport, and collect them in Ethiopia.
           </p>
 
           <div className="mt-10 flex items-center gap-6">

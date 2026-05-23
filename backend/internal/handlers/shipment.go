@@ -27,36 +27,13 @@ func NewShipmentHandler(notifier *services.NotificationService) *ShipmentHandler
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
-type addressInput struct {
-	Street string `json:"street"`
-	City   string `json:"city"`
-	State  string `json:"state"`
-	Zip    string `json:"zip"`
-}
-
-// formatAddressInput converts an address object to a single-line string for storage.
-func formatAddressInput(a addressInput) string {
-	s := a.Street
-	if a.City != "" {
-		s += ", " + a.City
-	}
-	if a.State != "" {
-		s += ", " + a.State
-	}
-	if a.Zip != "" {
-		s += " " + a.Zip
-	}
-	return s
-}
-
 type createShipmentRequest struct {
-	PickupAddress   addressInput `json:"pickup_address"    binding:"required"`
-	DeliveryAddress addressInput `json:"delivery_address"`
-	NumBags         int          `json:"num_bags"          binding:"required,min=1"`
-	TotalWeightLbs  float64      `json:"total_weight_lbs"  binding:"required,min=0"`
-	Notes           string       `json:"notes"`
-	Express         bool         `json:"express"`
-	PickupScheduled *time.Time   `json:"pickup_scheduled_at"`
+	DepartureAirport string     `json:"departure_airport" binding:"required"`
+	ArrivalAirport   string     `json:"arrival_airport"   binding:"required"`
+	NumBags          int        `json:"num_bags"          binding:"required,min=1"`
+	TotalWeightLbs   float64    `json:"total_weight_lbs"  binding:"required,min=0"`
+	Notes            string     `json:"notes"`
+	DropOffDate      *time.Time `json:"drop_off_date"`
 }
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
@@ -109,13 +86,7 @@ func (h *ShipmentHandler) Create(c *gin.Context) {
 		return
 	}
 
-	pickupAddress := formatAddressInput(req.PickupAddress)
-	deliveryAddress := formatAddressInput(req.DeliveryAddress)
-	if deliveryAddress == "" {
-		deliveryAddress = "Addis Ababa, Ethiopia"
-	}
-
-	_, _, _, estimatedPrice := calculatePrice(req.NumBags, req.TotalWeightLbs, req.Express)
+	_, _, _, estimatedPrice := calculatePrice(req.NumBags, req.TotalWeightLbs, false)
 
 	trackingNumber := generateTrackingNumber()
 
@@ -123,13 +94,13 @@ func (h *ShipmentHandler) Create(c *gin.Context) {
 		TrackingNumber:  trackingNumber,
 		UserID:          userID,
 		Status:          models.StatusPending,
-		PickupAddress:   pickupAddress,
-		DeliveryAddress: deliveryAddress,
+		PickupAddress:   req.DepartureAirport,
+		DeliveryAddress: req.ArrivalAirport,
 		NumBags:         req.NumBags,
 		TotalWeightLbs:  req.TotalWeightLbs,
 		EstimatedPrice:  estimatedPrice,
 		Notes:           req.Notes,
-		PickupScheduled: req.PickupScheduled,
+		PickupScheduled: req.DropOffDate,
 	}
 
 	if err := database.DB.Create(shipment).Error; err != nil {
@@ -193,14 +164,15 @@ func (h *ShipmentHandler) Track(c *gin.Context) {
 
 	// For public tracking, omit user personal details — return a safe subset.
 	c.JSON(http.StatusOK, gin.H{
-		"tracking_number":    shipment.TrackingNumber,
-		"status":             shipment.Status,
-		"delivery_address":   shipment.DeliveryAddress,
-		"num_bags":           shipment.NumBags,
-		"pickup_scheduled_at": shipment.PickupScheduled,
-		"created_at":         shipment.CreatedAt,
-		"updated_at":         shipment.UpdatedAt,
-		"tracking_events":    shipment.TrackingEvents,
+		"tracking_number":   shipment.TrackingNumber,
+		"status":            shipment.Status,
+		"pickup_address":    shipment.PickupAddress,
+		"delivery_address":  shipment.DeliveryAddress,
+		"num_bags":          shipment.NumBags,
+		"drop_off_date":     shipment.PickupScheduled,
+		"created_at":        shipment.CreatedAt,
+		"updated_at":        shipment.UpdatedAt,
+		"tracking_events":   shipment.TrackingEvents,
 	})
 }
 

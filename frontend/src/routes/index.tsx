@@ -3,10 +3,9 @@ import { useState } from 'react'
 import {
   Package2,
   Shield,
-  MapPin,
+  Plane,
   TrendingDown,
   ArrowRight,
-  Plane,
   Globe,
   Clock,
   CheckCircle,
@@ -26,10 +25,10 @@ export const Route = createFileRoute('/')({
 
 const FEATURES = [
   {
-    icon: Shield,
-    title: 'Careful Handling',
+    icon: Plane,
+    title: 'Airport to Airport',
     description:
-      'Your bags are packed securely and tracked from US pickup to Ethiopian delivery.',
+      'Drop your bags at your departure airport in the US. We handle everything through to your arrival airport in Ethiopia.',
     color: 'text-brand-700',
     bg: 'bg-brand-50',
   },
@@ -37,15 +36,15 @@ const FEATURES = [
     icon: Globe,
     title: 'Real-time Tracking',
     description:
-      'Track your shipment every step of the way — from pickup in the US to delivery at your doorstep in Ethiopia.',
+      'Track your shipment every step of the way — from check-in at the departure airport to arrival in Ethiopia.',
     color: 'text-eth-green',
     bg: 'bg-green-50',
   },
   {
-    icon: MapPin,
-    title: 'Door-to-Door Delivery',
+    icon: Shield,
+    title: 'Careful Handling',
     description:
-      'We pick up from your US address and deliver directly to any location in Ethiopia. No trips to the shipping office.',
+      'Your bags are checked in, tracked, and handled with care throughout the journey.',
     color: 'text-eth-red',
     bg: 'bg-red-50',
   },
@@ -63,22 +62,22 @@ const STEPS = [
   {
     step: '01',
     title: 'Book Online',
-    description: 'Create an account and book your shipment in minutes. Provide pickup and delivery details.',
+    description: 'Create an account, select your departure and arrival airports, and book your shipment in minutes.',
   },
   {
     step: '02',
-    title: 'We Pick Up',
-    description: 'Our team picks up your luggage at your US address at the scheduled time.',
+    title: 'Drop Off at Airport',
+    description: 'Bring your bags to the departure airport on your chosen date and check them in with us.',
   },
   {
     step: '03',
-    title: 'We Ship',
-    description: 'Your luggage is carefully packed, customs-cleared, and transported to Ethiopia.',
+    title: 'We Handle the Rest',
+    description: 'Your bags are checked in, cleared through customs, and transported to Ethiopia.',
   },
   {
     step: '04',
-    title: 'Delivered',
-    description: 'Your luggage arrives at the delivery address in Ethiopia. You get a notification when it\'s out for delivery.',
+    title: 'Collect at Destination',
+    description: 'Pick up your bags at the arrival airport in Ethiopia. You\'ll get a notification when they\'re ready.',
   },
 ]
 
@@ -198,7 +197,7 @@ function LandingPage() {
                 <span style={{ color: '#34d399' }}>Ethiopia</span>
               </h1>
               <p className="mb-8 max-w-xl text-lg text-brand-200 lg:mx-0 mx-auto">
-                Book online, schedule a pickup at your US address, and we handle everything through to delivery in Ethiopia.
+                Book online, drop your bags at your US departure airport, and collect them at your Ethiopian destination airport.
               </p>
               <div className="flex flex-col items-center gap-3 sm:flex-row lg:justify-start justify-center">
                 <Link to="/register">

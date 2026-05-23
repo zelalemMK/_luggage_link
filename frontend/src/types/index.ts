@@ -36,28 +36,20 @@ export interface TrackingEvent {
   created_at: string
 }
 
-export interface Address {
-  street: string
-  city: string
-  state: string
-  zip: string
-  country?: string
-}
-
 export interface Shipment {
   id: string
   tracking_number: string
   user_id: string
   user?: User
   status: ShipmentStatus
-  pickup_address: Address
-  delivery_address: Address
+  pickup_address: string    // departure airport display string
+  delivery_address: string  // arrival airport display string
   num_bags: number
   total_weight_lbs: number
   estimated_price_usd: number
   actual_price_usd: number | null
   notes: string
-  pickup_scheduled_at: string | null
+  pickup_scheduled_at: string | null  // customer's intended drop-off date
   created_at: string
   updated_at: string
   tracking_events?: TrackingEvent[]
@@ -84,19 +76,18 @@ export interface AuthResponse {
 }
 
 export interface CreateShipmentRequest {
-  pickup_address: Address
-  delivery_address: Address
+  departure_airport: string
+  arrival_airport: string
   num_bags: number
   total_weight_lbs: number
   notes?: string
-  pickup_scheduled_at?: string
+  drop_off_date?: string
 }
 
 export interface UpdateShipmentRequest {
   status?: ShipmentStatus
   actual_price_usd?: number
   notes?: string
-  pickup_scheduled_at?: string
 }
 
 export interface AddTrackingEventRequest {

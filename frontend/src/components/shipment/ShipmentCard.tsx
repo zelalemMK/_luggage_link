@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Package, MapPin, Calendar, Weight, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { ShipmentStatusBadge } from './ShipmentStatusBadge'
-import { formatDate, formatCurrency, formatAddress } from '@/lib/utils'
+import { formatDate, formatCurrency } from '@/lib/utils'
 import type { Shipment } from '@/types'
 
 interface ShipmentCardProps {
@@ -29,19 +29,11 @@ export function ShipmentCard({ shipment }: ShipmentCardProps) {
             <div className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
               <div className="flex items-center gap-1.5 text-sm text-gray-500">
                 <MapPin className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">
-                  {typeof shipment.pickup_address === 'string'
-                    ? shipment.pickup_address
-                    : formatAddress(shipment.pickup_address)}
-                </span>
+                <span className="truncate">{shipment.pickup_address}</span>
               </div>
               <div className="flex items-center gap-1.5 text-sm text-gray-500">
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-eth-green" />
-                <span className="truncate">
-                  {typeof shipment.delivery_address === 'string'
-                    ? shipment.delivery_address
-                    : formatAddress(shipment.delivery_address)}
-                </span>
+                <span className="truncate">{shipment.delivery_address}</span>
               </div>
             </div>
 

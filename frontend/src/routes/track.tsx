@@ -8,7 +8,7 @@ import { ShipmentStatusBadge } from '@/components/shipment/ShipmentStatusBadge'
 import { TrackingTimeline } from '@/components/shipment/TrackingTimeline'
 import { Navbar } from '@/components/layout/Navbar'
 import { useTrackShipment } from '@/hooks/useShipments'
-import { formatDate, formatCurrency, formatAddress } from '@/lib/utils'
+import { formatDate, formatCurrency } from '@/lib/utils'
 
 export const Route = createFileRoute('/track')({
   component: TrackPage,
@@ -119,21 +119,13 @@ function TrackPage() {
                   <p className="text-xs font-medium uppercase tracking-wider text-gray-400">
                     From (US)
                   </p>
-                  <p className="mt-1 text-gray-800">
-                    {typeof shipment.pickup_address === 'string'
-                      ? shipment.pickup_address
-                      : formatAddress(shipment.pickup_address)}
-                  </p>
+                  <p className="mt-1 text-gray-800">{shipment.pickup_address}</p>
                 </div>
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wider text-gray-400">
                     To (Ethiopia)
                   </p>
-                  <p className="mt-1 text-gray-800">
-                    {typeof shipment.delivery_address === 'string'
-                      ? shipment.delivery_address
-                      : formatAddress(shipment.delivery_address)}
-                  </p>
+                  <p className="mt-1 text-gray-800">{shipment.delivery_address}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400">Bags</p>

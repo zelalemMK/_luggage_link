@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {
   ArrowLeft,
   Package,
-  MapPin,
+  Plane,
   Calendar,
   Weight,
   DollarSign,
@@ -21,7 +21,7 @@ import { Modal } from '@/components/ui/Modal'
 import { ShipmentStatusBadge } from '@/components/shipment/ShipmentStatusBadge'
 import { TrackingTimeline } from '@/components/shipment/TrackingTimeline'
 import { useAdminShipment, useUpdateShipment, useAddTrackingEvent } from '@/hooks/useShipments'
-import { formatDate, formatDateTime, formatCurrency, formatAddress, STATUS_LABELS } from '@/lib/utils'
+import { formatDate, formatDateTime, formatCurrency, STATUS_LABELS } from '@/lib/utils'
 import { getToken } from '@/lib/api'
 import type { ShipmentStatus, AddTrackingEventRequest } from '@/types'
 
@@ -98,16 +98,6 @@ function AdminShipmentDetailPage() {
     )
   }
 
-  const pickupAddr =
-    typeof shipment.pickup_address === 'string'
-      ? shipment.pickup_address
-      : formatAddress(shipment.pickup_address)
-
-  const deliveryAddr =
-    typeof shipment.delivery_address === 'string'
-      ? shipment.delivery_address
-      : formatAddress(shipment.delivery_address)
-
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -168,17 +158,17 @@ function AdminShipmentDetailPage() {
               </h2>
               <dl className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
+                  <Plane className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
                   <div>
-                    <dt className="text-xs text-gray-400">Pickup (US)</dt>
-                    <dd className="text-gray-800">{pickupAddr}</dd>
+                    <dt className="text-xs text-gray-400">Departure Airport (US)</dt>
+                    <dd className="text-gray-800">{shipment.pickup_address}</dd>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-eth-green" />
+                  <Plane className="mt-0.5 h-4 w-4 shrink-0 text-eth-green" style={{ transform: 'scaleX(-1)' }} />
                   <div>
-                    <dt className="text-xs text-gray-400">Delivery (Ethiopia)</dt>
-                    <dd className="text-gray-800">{deliveryAddr}</dd>
+                    <dt className="text-xs text-gray-400">Arrival Airport (Ethiopia)</dt>
+                    <dd className="text-gray-800">{shipment.delivery_address}</dd>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -201,8 +191,8 @@ function AdminShipmentDetailPage() {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-brand-500" />
                     <div>
-                      <dt className="text-xs text-gray-400">Pickup Scheduled</dt>
-                      <dd className="text-gray-800">{formatDateTime(shipment.pickup_scheduled_at)}</dd>
+                      <dt className="text-xs text-gray-400">Intended Drop-off Date</dt>
+                      <dd className="text-gray-800">{formatDate(shipment.pickup_scheduled_at)}</dd>
                     </div>
                   </div>
                 )}

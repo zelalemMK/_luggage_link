@@ -52,30 +52,16 @@ export function formatCurrency(amount: number | null | undefined): string {
 // ─── Status label map ─────────────────────────────────────────────────────────
 
 export const STATUS_LABELS: Record<ShipmentStatus, string> = {
-  PENDING: 'Pending',
-  CONFIRMED: 'Confirmed',
-  PICKED_UP: 'Picked Up',
-  IN_TRANSIT_US: 'In Transit (US)',
+  PENDING: 'Awaiting Confirmation',
+  CONFIRMED: 'Confirmed — Drop Off at Airport',
+  PICKED_UP: 'Checked In at Airport',
+  IN_TRANSIT_US: 'At Departure Airport',
   CUSTOMS_CLEARANCE: 'Customs Clearance',
-  IN_TRANSIT_ET: 'In Transit (Ethiopia)',
-  ARRIVED_ETHIOPIA: 'Arrived in Ethiopia',
-  OUT_FOR_DELIVERY: 'Out for Delivery',
-  DELIVERED: 'Delivered',
+  IN_TRANSIT_ET: 'In Transit to Ethiopia',
+  ARRIVED_ETHIOPIA: 'Arrived at Destination Airport',
+  OUT_FOR_DELIVERY: 'Ready for Collection',
+  DELIVERED: 'Collected',
   CANCELLED: 'Cancelled',
-}
-
-// ─── Address formatter ────────────────────────────────────────────────────────
-
-export function formatAddress(address: {
-  street: string
-  city: string
-  state: string
-  zip: string
-  country?: string
-}): string {
-  const parts = [address.street, address.city, `${address.state} ${address.zip}`]
-  if (address.country) parts.push(address.country)
-  return parts.join(', ')
 }
 
 // ─── Misc ─────────────────────────────────────────────────────────────────────
