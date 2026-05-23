@@ -94,7 +94,7 @@ export function BookingForm() {
       num_bags: numBags,
       total_weight_lbs: weightLbs,
       notes: notes || undefined,
-      drop_off_date: dropOffDate || undefined,
+      drop_off_date: dropOffDate ? `${dropOffDate}T00:00:00Z` : undefined,
     }
     try {
       const shipment = await createShipment(payload)
