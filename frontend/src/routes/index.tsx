@@ -27,9 +27,9 @@ export const Route = createFileRoute('/')({
 const FEATURES = [
   {
     icon: Shield,
-    title: 'Secure Shipping',
+    title: 'Careful Handling',
     description:
-      'Your luggage is fully insured and handled by trusted logistics partners across the US and Ethiopia.',
+      'Your bags are packed securely and tracked from US pickup to Ethiopian delivery.',
     color: 'text-brand-700',
     bg: 'bg-brand-50',
   },
@@ -51,9 +51,9 @@ const FEATURES = [
   },
   {
     icon: TrendingDown,
-    title: 'Competitive Rates',
+    title: 'Transparent Pricing',
     description:
-      'Transparent pricing with no hidden fees. Save up to 40% compared to airline overweight luggage charges.',
+      'Flat-rate pricing with no hidden fees. Use the calculator to get an estimate before you book.',
     color: 'text-eth-yellow',
     bg: 'bg-yellow-50',
   },
@@ -78,7 +78,7 @@ const STEPS = [
   {
     step: '04',
     title: 'Delivered',
-    description: 'Your luggage arrives safely at the delivery address in Ethiopia — usually within 7–14 days.',
+    description: 'Your luggage arrives at the delivery address in Ethiopia. You get a notification when it\'s out for delivery.',
   },
 ]
 
@@ -198,8 +198,7 @@ function LandingPage() {
                 <span style={{ color: '#34d399' }}>Ethiopia</span>
               </h1>
               <p className="mb-8 max-w-xl text-lg text-brand-200 lg:mx-0 mx-auto">
-                Door-to-door luggage shipping with real-time tracking, full insurance, and competitive rates.
-                Trusted by thousands of the Ethiopian diaspora community.
+                Book online, schedule a pickup at your US address, and we handle everything through to delivery in Ethiopia.
               </p>
               <div className="flex flex-col items-center gap-3 sm:flex-row lg:justify-start justify-center">
                 <Link to="/register">
@@ -220,19 +219,6 @@ function LandingPage() {
                 </Link>
               </div>
 
-              {/* Social proof */}
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-6 lg:justify-start">
-                {[
-                  { label: '10,000+', sub: 'Bags delivered' },
-                  { label: '98%', sub: 'On-time delivery' },
-                  { label: '4.9★', sub: 'Customer rating' },
-                ].map(({ label, sub }) => (
-                  <div key={sub} className="text-center">
-                    <p className="text-2xl font-bold text-white">{label}</p>
-                    <p className="text-xs text-brand-300">{sub}</p>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Pricing calculator */}
@@ -311,7 +297,7 @@ function LandingPage() {
             Ready to ship your luggage?
           </h2>
           <p className="mb-8 text-lg text-white/80">
-            Join thousands of Ethiopians in the diaspora who trust Luggage Link.
+            Create a free account and get a quote in minutes.
           </p>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link to="/register">
@@ -337,7 +323,7 @@ function LandingPage() {
             <div className="h-1.5 w-8 rounded-full" style={{ backgroundColor: '#DA121A' }} />
           </div>
           <p className="font-semibold text-white">Luggage Link</p>
-          <p className="mt-1">Connecting the Ethiopian diaspora — one bag at a time.</p>
+          <p className="mt-1">US to Ethiopia luggage shipping.</p>
           <p className="mt-4">
             &copy; {new Date().getFullYear()} Luggage Link, Inc. All rights reserved.
           </p>

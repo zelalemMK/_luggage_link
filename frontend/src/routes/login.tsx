@@ -63,14 +63,14 @@ function LoginPage() {
             <span className="text-yellow-300">care.</span>
           </h2>
           <p className="text-brand-300 text-sm leading-relaxed max-w-xs">
-            Door-to-door service with real-time tracking, full insurance, and competitive rates trusted by the Ethiopian diaspora.
+            Book a shipment online, we pick up your bags in the US and deliver them to Ethiopia.
           </p>
 
           <div className="mt-10 flex items-center gap-6">
             {[
-              { v: '10K+', l: 'Bags shipped' },
-              { v: '98%', l: 'On time' },
-              { v: '4.9★', l: 'Rated' },
+              { v: 'US→ET', l: 'Direct route' },
+              { v: 'Online', l: 'Book anytime' },
+              { v: 'Tracked', l: 'Every step' },
             ].map(({ v, l }) => (
               <div key={l}>
                 <p className="text-xl font-bold text-white">{v}</p>
