@@ -194,7 +194,15 @@ export interface FileRoutesByPath {
 
 // Augment the router-core module so createFileRoute path strings are validated
 declare module '@tanstack/router-core' {
-  interface FileRoutesByPath extends FileRoutesByPath {} // eslint-disable-line @typescript-eslint/no-empty-interface
+  interface FileRoutesByPath extends FileRoutesByPath { // eslint-disable-line @typescript-eslint/no-empty-interface
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordImport
+      parentRoute: typeof rootRoute
+    }
+  }
 }
 
 export type RootRouteChildren = {

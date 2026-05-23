@@ -31,9 +31,9 @@ export function useAuth() {
       queryClient.setQueryData(AUTH_QUERY_KEY, me)
       toast.success(`Welcome back, ${me.first_name}!`)
       if (me.role === 'admin') {
-        navigate({ to: '/admin' })
+        navigate({ to: '/admin/' })
       } else {
-        navigate({ to: '/dashboard' })
+        navigate({ to: '/dashboard/' })
       }
     },
     onError: () => {
@@ -48,7 +48,7 @@ export function useAuth() {
       setToken(token)
       queryClient.setQueryData(AUTH_QUERY_KEY, me)
       toast.success(`Welcome to Luggage Link, ${me.first_name}!`)
-      navigate({ to: '/dashboard' })
+      navigate({ to: '/dashboard/' })
     },
     onError: () => {
       toast.error('Registration failed. This email may already be in use.')

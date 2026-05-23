@@ -9,7 +9,7 @@ import { getToken } from '@/lib/api'
 export const Route = createFileRoute('/login')({
   beforeLoad: () => {
     if (getToken()) {
-      throw redirect({ to: '/dashboard' })
+      throw redirect({ to: '/dashboard/' })
     }
   },
   component: LoginPage,

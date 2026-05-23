@@ -90,7 +90,7 @@ function AdminShipmentDetailPage() {
         <Card className="py-16 text-center">
           <Package className="mx-auto mb-4 h-12 w-12 text-gray-300" />
           <h2 className="text-lg font-semibold text-gray-700">Shipment not found</h2>
-          <Link to="/admin/shipments" className="mt-4 inline-block text-sm text-brand-700 hover:underline">
+          <Link to="/admin/shipments/" className="mt-4 inline-block text-sm text-brand-700 hover:underline">
             Back to Shipments
           </Link>
         </Card>
@@ -114,7 +114,7 @@ function AdminShipmentDetailPage() {
         {/* Back + header */}
         <div>
           <Link
-            to="/admin/shipments"
+            to="/admin/shipments/"
             className="mb-2 inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
