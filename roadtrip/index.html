@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f5d50" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Cheap Trip" />
+  <title>Cheap Trip Planner</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="map" aria-label="Map"></div>
+
+  <section id="panel">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="trip" aria-selected="true">Trip</button>
+      <button role="tab" data-tab="stops">Stops</button>
+      <button role="tab" data-tab="costs">Costs</button>
+      <button role="tab" data-tab="settings">Settings</button>
+    </nav>
+
+    <div class="tab" id="tab-trip">
+      <form id="trip-form" autocomplete="off">
+        <label>From
+          <div class="row">
+            <input id="from" placeholder="City, address, or lat,lon" required />
+            <button type="button" id="use-location" title="Use my location">📍</button>
+          </div>
+        </label>
+        <label>Via <span class="muted">(optional)</span>
+          <input id="via" placeholder="A stop along the way" />
+        </label>
+        <label>To
+          <input id="to" placeholder="Where are you going?" required />
+        </label>
+        <button type="submit" class="primary" id="plan-btn">Plan route</button>
+      </form>
+      <div id="status" class="status" role="status"></div>
+      <div id="summary"></div>
+    </div>
+
+    <div class="tab" id="tab-stops" hidden>
+      <p class="muted">Search around where each driving day ends and where you'll need gas.</p>
+      <div class="btn-grid">
+        <button id="find-lodging" class="primary" disabled>Cheap lodging at overnight stops</button>
+        <button id="find-fuel" disabled>Gas at fuel stops</button>
+        <button id="find-fuel-all" disabled>Gas every <span id="gas-every-label"></span> mi</button>
+        <button id="find-lodging-dest" disabled>Lodging near destination</button>
+      </div>
+      <div id="stops-status" class="status" role="status"></div>
+      <div id="stops-list"></div>
+      <p class="muted small">
+        Places come from OpenStreetMap. Live gas prices and room rates aren't available from any free source,
+        so lodging is ranked by type (campground → hostel/YMCA → motel → guest house) and gas by prices
+        <em>you</em> log. Most YMCAs are gyms only — call ahead to ask about rooms.
+      </p>
+    </div>
+
+    <div class="tab" id="tab-costs" hidden>
+      <div id="cost-table"></div>
+      <h3>My formulas</h3>
+      <p class="muted small">Write your own calculations using the variables below. Example:
+        <code>fuel_cost / travelers</code> or <code>round(miles / days, 0)</code>.</p>
+      <div id="formulas"></div>
+      <form id="formula-form" class="formula-add">
+        <input id="formula-name" placeholder="Name (e.g. Gas per person)" required />
+        <input id="formula-expr" placeholder="Formula (e.g. fuel_cost / travelers)" required />
+        <button type="submit">Add</button>
+      </form>
+      <details>
+        <summary>Variables &amp; functions</summary>
+        <div id="var-list" class="small"></div>
+      </details>
+    </div>
+
+    <div class="tab" id="tab-settings" hidden>
+      <form id="settings-form" class="settings">
+        <fieldset>
+          <legend>Vehicle</legend>
+          <label>Miles per gallon <input type="number" step="0.1" min="1" name="mpg" /></label>
+          <label>Tank size (gal) <input type="number" step="0.1" min="1" name="tankGallons" /></label>
+          <label>Refill at % left <input type="number" step="1" min="0" max="90" name="reservePct" /></label>
+          <label>Gas price ($/gal) <input type="number" step="0.01" min="0" name="gasPrice" /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Trip</legend>
+          <label>Max driving hours/day <input type="number" step="0.5" min="1" max="24" name="maxHoursPerDay" /></label>
+          <label>Lodging budget/night ($) <input type="number" step="1" min="0" name="lodgingPerNight" /></label>
+          <label>Food per person/day ($) <input type="number" step="1" min="0" name="foodPerDay" /></label>
+          <label>Travelers <input type="number" step="1" min="1" name="travelers" /></label>
+          <label>Other costs ($, tolls etc.) <input type="number" step="1" min="0" name="extraCosts" /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Search</legend>
+          <label>Search radius (mi) <input type="number" step="1" min="1" max="30" name="radiusMiles" /></label>
+          <label>Gas search spacing (mi) <input type="number" step="10" min="20" name="gasEveryMiles" /></label>
+          <label class="check"><input type="checkbox" name="includeHotels" /> Include regular hotels</label>
+        </fieldset>
+      </form>
+      <button id="reset-data" class="danger">Reset all saved data</button>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
