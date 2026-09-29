@@ -80,6 +80,16 @@ button.danger { color: var(--danger); border-color: var(--danger); background: n
 
 .btn-grid { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
 .btn-grid .primary { grid-column: 1 / -1; }
+.ymca-row {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; align-items: center;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+}
+.ymca-row label { grid-column: 1 / -1; margin: 0; }
+select {
+  font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 8px; min-width: 0;
+}
 
 .status { min-height: 1.4em; margin: 10px 0; color: var(--muted); font-size: 14px; }
 .status.error { color: var(--danger); }

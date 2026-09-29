@@ -9,6 +9,7 @@ import {
   buildOverpassQuery,
   parseOverpass,
   nearestMark,
+  closestPerGroup,
   sortPlaces,
   evaluate,
   FORMULA_FUNCTIONS,
@@ -30,6 +31,8 @@ const DEFAULT_SETTINGS = {
   travelers: 1,
   extraCosts: 0,
   radiusMiles: 8,
+  ymcaRadiusMiles: 25, // YMCAs are sparse, so look wider than for motels or gas
+  ymcaTarget: 'day', // 'day' | 'half' | 'dest'
   gasEveryMiles: 100,
   includeHotels: false,
 };
@@ -196,7 +199,7 @@ function recompute() {
   drawRoute();
   renderSummary();
   renderCosts();
-  ['#find-lodging', '#find-fuel', '#find-fuel-all', '#find-lodging-dest'].forEach((id) => ($(id).disabled = false));
+  ['#find-lodging', '#find-fuel', '#find-fuel-all', '#find-lodging-dest', '#find-ymca'].forEach((id) => ($(id).disabled = false));
   $('#find-lodging').disabled = state.plan.nights === 0;
   $('#find-fuel').disabled = state.plan.fuelStops === 0;
 }
@@ -384,22 +387,32 @@ async function searchAround(marks, kind, labelFor) {
   setStatus(status, `Searching ${points.length} area${points.length === 1 ? '' : 's'}…`);
   document.querySelectorAll('.btn-grid button').forEach((b) => (b.dataset.wasDisabled = b.disabled, (b.disabled = true)));
   try {
-    const query = buildOverpassQuery(points, s.radiusMiles * METERS_PER_MILE, kind, { includeHotels: s.includeHotels });
+    const radiusMiles = kind === 'ymca' ? s.ymcaRadiusMiles : s.radiusMiles;
+    const query = buildOverpassQuery(points, radiusMiles * METERS_PER_MILE, kind, { includeHotels: s.includeHotels });
     const json = await fetchJson(OVERPASS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `data=${encodeURIComponent(query)}`,
     });
-    const places = parseOverpass(json)
-      .filter((p) => (kind === 'fuel' ? p.kind === 'fuel' : p.kind !== 'fuel' && p.kind !== 'other'))
+    const wanted = {
+      fuel: (p) => p.kind === 'fuel',
+      ymca: (p) => p.kind === 'ymca',
+      lodging: (p) => !['fuel', 'ymca', 'other'].includes(p.kind),
+    }[kind];
+    let places = parseOverpass(json)
+      .filter(wanted)
       .map((p) => {
         const near = nearestMark(p, points);
         return { ...p, group: near.index, offRouteMiles: near.miles };
-      });
+      })
+      // Overpass already limits by radius; this also drops big areas whose center sits outside it.
+      .filter((p) => p.offRouteMiles <= radiusMiles * 1.1);
+    // Just one YMCA per point, not every branch in the area.
+    if (kind === 'ymca') places = closestPerGroup(places, points.length).filter(Boolean);
     state.places = places;
-    state.lastSearch = { points, kind, labelFor };
+    state.lastSearch = { points, kind, labelFor, radiusMiles };
     renderPlaces();
-    setStatus(status, places.length ? `Found ${places.length} place${places.length === 1 ? '' : 's'}.` : 'Nothing found — try a bigger search radius in Settings.');
+    setStatus(status, places.length ? `Found ${places.length} place${places.length === 1 ? '' : 's'}.` : `Nothing found within ${radiusMiles} mi — try a bigger search radius in Settings.`);
   } catch (err) {
     setStatus(status, `Search failed: ${err.message}. The free server may be busy; try again in a minute.`, true);
   } finally {
@@ -408,13 +421,17 @@ async function searchAround(marks, kind, labelFor) {
 }
 
 function renderPlaces() {
-  const { points, labelFor } = state.lastSearch;
+  const { points, kind, labelFor, radiusMiles } = state.lastSearch;
   placesLayer.clearLayers();
   const groups = points.map(() => []);
   state.places.forEach((p) => groups[p.group].push(p));
   const html = groups
     .map((list, gi) => {
-      if (!list.length) return '';
+      if (!list.length) {
+        return kind === 'ymca'
+          ? `<div class="group-title">${esc(labelFor(gi))}</div><p class="muted small">No YMCA within ${radiusMiles} mi.</p>`
+          : '';
+      }
       const sorted = sortPlaces(list, state.prices).slice(0, 12);
       return `<div class="group-title">${esc(labelFor(gi))}</div>` + sorted.map(placeCard).join('');
     })
@@ -481,6 +498,25 @@ $('#find-lodging').addEventListener('click', () => {
 $('#find-lodging-dest').addEventListener('click', () => {
   const end = state.route.coords[state.route.coords.length - 1];
   searchAround([end], 'lodging', () => 'Near destination');
+});
+$('#ymca-target').value = state.settings.ymcaTarget;
+$('#ymca-target').addEventListener('change', (e) => {
+  state.settings.ymcaTarget = e.target.value;
+  save('settings', state.settings);
+});
+$('#find-ymca').addEventListener('click', () => {
+  const { miles, coords } = state.route;
+  const target = state.settings.ymcaTarget;
+  if (target === 'dest') {
+    return searchAround([coords[coords.length - 1]], 'ymca', () => 'Closest YMCA to your destination');
+  }
+  if (target === 'half') {
+    return searchAround([miles / 2], 'ymca', () => `Closest YMCA to the halfway point · mile ${num(miles / 2)}`);
+  }
+  const marks = overnightMarks(state.plan, state.settings.maxHoursPerDay);
+  // A one-day trip ends at the destination, so that's where day one ends.
+  if (!marks.length) return searchAround([coords[coords.length - 1]], 'ymca', () => 'End of day 1 · your destination');
+  searchAround(marks, 'ymca', (i) => `End of day ${i + 1} · around mile ${num(marks[i])}`);
 });
 $('#find-fuel').addEventListener('click', () => {
   const marks = fuelMarks(state.plan);

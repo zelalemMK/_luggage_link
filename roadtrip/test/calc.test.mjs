@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   haversineMiles, cumulativeMiles, pointAtMiles, marksEvery, planTrip,
   overnightMarks, fuelMarks, classifyPlace, buildOverpassQuery, parseOverpass,
-  sortPlaces, evaluate,
+  sortPlaces, closestPerGroup, evaluate,
 } from '../calc.js';
 
 const near = (a, b, tol = 0.01) => assert.ok(Math.abs(a - b) <= tol, `${a} ≉ ${b}`);
@@ -74,11 +74,24 @@ test('buildOverpassQuery covers each point and kind', () => {
   assert.match(q, /around:8000,41\.00000,-106\.00000/);
   assert.match(q, /hostel\|motel\|camp_site\|guest_house\)/);
   assert.doesNotMatch(q, /hotel\)/);
-  assert.match(q, /Y\[MW\]CA/);
+  assert.doesNotMatch(q, /YMCA|Y\[MW\]CA/);
   assert.match(buildOverpassQuery([[40, -105]], 1, 'lodging', { includeHotels: true }), /\|hotel\)/);
   const f = buildOverpassQuery([[40, -105]], 1000, 'fuel');
   assert.match(f, /"amenity"="fuel"/);
   assert.doesNotMatch(f, /tourism/);
+  const y = buildOverpassQuery([[40, -105]], 40000, 'ymca');
+  assert.match(y, /"name"~"Y\[MW\]CA",i\]\(around:40000,/);
+  assert.doesNotMatch(y, /tourism|fuel/);
+});
+
+test('closestPerGroup keeps one per point, lodging-tagged first, then nearest', () => {
+  const places = [
+    { id: 'gym-near', group: 0, offRouteMiles: 1, tags: { leisure: 'sports_centre' } },
+    { id: 'rooms-far', group: 0, offRouteMiles: 9, tags: { tourism: 'hostel' } },
+    { id: 'gym-far', group: 2, offRouteMiles: 7, tags: {} },
+    { id: 'gym-close', group: 2, offRouteMiles: 3, tags: {} },
+  ];
+  assert.deepEqual(closestPerGroup(places, 3).map((p) => p?.id ?? null), ['rooms-far', null, 'gym-close']);
 });
 
 test('parseOverpass dedupes and uses way centers', () => {

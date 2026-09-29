@@ -51,13 +51,23 @@
         <button id="find-fuel" disabled>Gas at fuel stops</button>
         <button id="find-fuel-all" disabled>Gas every <span id="gas-every-label"></span> mi</button>
         <button id="find-lodging-dest" disabled>Lodging near destination</button>
+        <div class="ymca-row">
+          <label for="ymca-target">Closest YMCA to</label>
+          <select id="ymca-target">
+            <option value="day">End of each day</option>
+            <option value="half">Halfway point</option>
+            <option value="dest">My destination</option>
+          </select>
+          <button id="find-ymca" disabled>Find YMCA</button>
+        </div>
       </div>
       <div id="stops-status" class="status" role="status"></div>
       <div id="stops-list"></div>
       <p class="muted small">
         Places come from OpenStreetMap. Live gas prices and room rates aren't available from any free source,
-        so lodging is ranked by type (campground → hostel/YMCA → motel → guest house) and gas by prices
-        <em>you</em> log. Most YMCAs are gyms only — call ahead to ask about rooms.
+        so lodging is ranked by type (campground → hostel → motel → guest house) and gas by prices
+        <em>you</em> log. YMCAs are searched separately and only the closest one to each point is shown —
+        most are gyms only, so call ahead to ask about rooms.
       </p>
     </div>
 
@@ -98,6 +108,7 @@
         <fieldset>
           <legend>Search</legend>
           <label>Search radius (mi) <input type="number" step="1" min="1" max="30" name="radiusMiles" /></label>
+          <label>YMCA search radius (mi) <input type="number" step="1" min="1" max="60" name="ymcaRadiusMiles" /></label>
           <label>Gas search spacing (mi) <input type="number" step="10" min="20" name="gasEveryMiles" /></label>
           <label class="check"><input type="checkbox" name="includeHotels" /> Include regular hotels</label>
         </fieldset>

@@ -13,7 +13,10 @@ It's plain HTML/JS with no build step and no API keys.
 - **Trip math** — miles, drive time, gallons, fuel stops (refuel at your chosen % left), days/nights
   from your max driving hours per day, and a cost breakdown (gas, lodging, food, other).
 - **Stops** — searches OpenStreetMap around each overnight point / fuel stop:
-  - Lodging ranked cheapest-type first: campground → hostel / YMCA → motel → guest house (hotels optional).
+  - Lodging ranked cheapest-type first: campground → hostel → motel → guest house (hotels optional).
+  - **Find YMCA** shows just the one closest YMCA/YWCA to the point you pick: the end of each driving
+    day, the halfway point, or your destination. It searches a wider radius (25 mi by default) because
+    YMCAs are spread out, and prefers a branch listed as lodging over a gym-only one.
   - Gas stations, with a **Log price** box. Stations with prices you've logged sort cheapest first.
   - Every result has Navigate (opens Google/Apple Maps), and Call / Website when known.
 - **My formulas** — add your own calculations, e.g. `fuel_cost / travelers` or `round(miles / days, 0)`.
@@ -24,7 +27,7 @@ It's plain HTML/JS with no build step and no API keys.
 
 - **No live gas prices or room rates.** No free service provides them (GasBuddy etc. have no public API).
   Enter a typical gas price in Settings and log prices you see; lodging is ranked by type, not price.
-- **Most YMCAs don't rent rooms.** The app shows every YMCA/YWCA near your stop so you can call and ask.
+- **Most YMCAs don't rent rooms.** Call the one it finds to ask about rooms.
 - Uses free public servers (Nominatim, OSRM, Overpass). They're rate-limited; if a search fails, wait a minute.
 - Needs a connection for maps, routing and searches. The app itself opens offline once installed.
 

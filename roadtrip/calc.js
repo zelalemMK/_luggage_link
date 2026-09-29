@@ -131,7 +131,8 @@ export function classifyPlace(tags = {}) {
   return { kind: 'other', label: 'Place', rank: 9 };
 }
 
-// One Overpass query for many search circles. kind: 'lodging' | 'fuel'.
+// One Overpass query for many search circles. kind: 'lodging' | 'fuel' | 'ymca'.
+// YMCAs are searched on their own (see closestPerGroup) so they don't flood the lodging list.
 export function buildOverpassQuery(points, radiusMeters, kind, { includeHotels = false } = {}) {
   const r = Math.round(radiusMeters);
   const tourism = includeHotels
@@ -142,10 +143,11 @@ export function buildOverpassQuery(points, radiusMeters, kind, { includeHotels =
     const at = `(around:${r},${lat.toFixed(5)},${lon.toFixed(5)})`;
     if (kind === 'fuel') {
       parts.push(`nwr["amenity"="fuel"]${at};`);
-    } else {
-      parts.push(`nwr["tourism"~"^(${tourism})$"]${at};`);
+    } else if (kind === 'ymca') {
       // Overpass uses POSIX regex (no \b), so match loosely and let classifyPlace confirm.
       parts.push(`nwr["name"~"Y[MW]CA",i]${at};`);
+    } else {
+      parts.push(`nwr["tourism"~"^(${tourism})$"]${at};`);
     }
   }
   return `[out:json][timeout:60];(${parts.join('')});out center tags 400;`;
@@ -183,6 +185,20 @@ export function nearestMark(place, markPoints) {
     const d = haversineMiles(p, [place.lat, place.lon]);
     if (d < best.miles) best = { index: i, miles: d };
   });
+  return best;
+}
+
+// The single best place per search point: one that's tagged as lodging beats a gym-only
+// one, then the closest wins. Returns an array indexed by group (null where nothing was found).
+export function closestPerGroup(places, groupCount) {
+  const best = Array(groupCount).fill(null);
+  for (const p of places) {
+    const cur = best[p.group];
+    const lodges = (x) => (x.tags?.tourism ? 0 : 1);
+    if (!cur || lodges(p) < lodges(cur) || (lodges(p) === lodges(cur) && p.offRouteMiles < cur.offRouteMiles)) {
+      best[p.group] = p;
+    }
+  }
   return best;
 }
 
